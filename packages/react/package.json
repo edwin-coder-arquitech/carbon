@@ -1,5 +1,5 @@
 {
-  "name": "@carbon/react",
+  "name": "@edwin-coder-arquitech/carbon-react",
   "description": "React components for the Carbon Design System",
   "version": "1.75.0",
   "license": "Apache-2.0",
@@ -8,10 +8,10 @@
   "module": "es/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/carbon-design-system/carbon.git",
+    "url": "https://github.com/edwin-coder-arquitech/carbon.git",
     "directory": "packages/carbon-react"
   },
-  "bugs": "https://github.com/carbon-design-system/carbon/issues",
+  "bugs": "https://github.com/edwin-coder-arquitec/carbon/issues",
   "files": [
     "es",
     "lib",

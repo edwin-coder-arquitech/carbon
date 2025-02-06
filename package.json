@@ -1,8 +1,8 @@
 {
-  "name": "carbon",
+  "name": "@edwin-coder-arquitech/carbon",
   "private": true,
-  "version": "0.0.0",
-  "repository": "git@github.com:carbon-design-system/carbon.git",
+  "version": "2.0.0",
+  "repository": "https://github.com/edwin-coder-arquitec/carbon.git",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=18.x"
