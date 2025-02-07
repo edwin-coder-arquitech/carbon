@@ -87,7 +87,8 @@
 .popover-title {
   @include component-reset.reset;
   @include type.type-style('heading-compact-01');
-
+  
+  // CHECK:
   margin-block-end: spacing.$spacing-01;
 }
 

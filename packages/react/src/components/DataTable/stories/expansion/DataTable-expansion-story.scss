@@ -3,12 +3,13 @@
 
 .demo-inner-container-header {
   @include type.type-style('heading-compact-01');
-
+  // CHECK:
   color: theme.$text-primary;
+
 }
 
 .demo-inner-container-content {
   @include type.type-style('body-01');
-
+  // CHECK:
   color: theme.$text-secondary;
 }

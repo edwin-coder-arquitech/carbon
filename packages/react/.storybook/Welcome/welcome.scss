@@ -17,8 +17,10 @@
 
 .welcome__heading {
   @include type.type-style('productive-heading-07');
-
-  color: colors.$white;
+  // CHECK:
+  & {
+    color: colors.$white;
+    }
 }
 
 .welcome__heading--subtitle {

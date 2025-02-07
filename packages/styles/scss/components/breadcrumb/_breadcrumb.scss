@@ -21,8 +21,10 @@
   .#{$prefix}--breadcrumb {
     @include component-reset.reset;
     @include type-style('body-compact-01');
-
-    display: inline;
+    
+    & {
+        display: inline;
+    }
 
     @include breakpoint(md) {
       display: flex;

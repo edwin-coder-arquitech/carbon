@@ -41,10 +41,13 @@ $types: (
 
 .#{$prefix}--annotation__label {
   @include type.type-style('code-01');
-
-  display: inline-flex;
-  padding: spacing.$spacing-02;
-  column-gap: spacing.$spacing-02;
+  
+  // CHECK:
+  & {
+    display: inline-flex;
+    padding: spacing.$spacing-02;
+    column-gap: spacing.$spacing-02;
+  }
 }
 
 .#{$prefix}--annotation__label > :first-child {

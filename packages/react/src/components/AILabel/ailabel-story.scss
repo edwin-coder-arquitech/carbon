@@ -105,7 +105,10 @@
 
 .ai-label-tile-container .cds--tile-content__below-the-fold p {
   @include type.type-style('label-01');
-  margin: 8px 0 50px;
+  // CHECK:
+  & {
+    margin: 8px 0 50px;
+  }
 }
 
 .form-example {
