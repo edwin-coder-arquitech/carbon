@@ -1,0 +1,62 @@
+import { ArgTypes, Meta } from '@storybook/blocks';
+
+<Meta isTemplate />
+
+# MenuButton
+
+[Source code](https://github.com/carbon-design-system/carbon/tree/main/packages/react/src/components/MenuButton)
+
+{/* <!-- START doctoc generated TOC please keep comment here to allow auto update --> <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE --> */}
+
+- [Overview](#overview)
+- [Component API](#component-api)
+- [Feedback](#feedback)
+
+{/* <!-- END doctoc generated TOC please keep comment here to allow auto update --> */}
+
+## Overview
+
+A `MenuButton` can be used to group a set of actions that are related. These
+actions must be `MenuItem`s passed as `children`. The trigger buttons's label is
+passed as `props.label`.
+
+```jsx
+<MenuButton label="Actions">
+  <MenuItem label="First action" />
+  <MenuItem label="Second action" />
+  <MenuItem label="Third action" />
+</MenuButton>
+```
+
+## Menu Alignment
+
+The `menuAlignment` prop enables you to define the placement of the Menu in
+relation to the `MenuButton`. For instance, setting `menuAlignment="top"` on the
+`MenuButton` will render the Menu above the button.
+
+If it seems your specified `menuAlignment` isn't working, it's because we
+prioritize ensuring the Menu remains visible. We calculate the optimal position
+to display the Menu in case the provided `menuAlignment` obscures it.
+
+We encourage you to play around in the Storybook Default stories to better
+understand the `menuAlignment` prop.
+
+## menuTarget Prop
+
+The `menuTarget` prop specifies where the `Menu` should render, which is
+particularly useful when using `MenuButton` inside a modal. By default, the menu
+renders in `document.body`, but this can disrupt focus order in modals or other
+components with focus management.
+
+Pass the `menuTarget` prop to render the `Menu` inside the modal or any specific
+element where you want it to render:
+
+## Component API
+
+<ArgTypes />
+
+## Feedback
+
+Help us improve this component by providing feedback, asking questions on Slack,
+or updating this file on
+[GitHub](https://github.com/carbon-design-system/carbon/edit/main/packages/react/src/components/MenuButton/MenuButton.mdx).
