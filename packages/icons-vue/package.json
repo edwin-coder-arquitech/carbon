@@ -1,0 +1,46 @@
+{
+  "name": "@edwin-coder-arquitech/icons-vue",
+  "description": "Vue components for icons in digital and software products using the Carbon Design System",
+  "version": "10.104.0",
+  "license": "Apache-2.0",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/carbon-design-system/carbon.git",
+    "directory": "packages/icons-vue"
+  },
+  "bugs": "https://github.com/carbon-design-system/carbon/issues",
+  "keywords": [
+    "ibm",
+    "elements",
+    "carbon",
+    "carbon-elements",
+    "carbon-design-system",
+    "components",
+    "react"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "yarn clean && node tasks/build.js",
+    "clean": "rimraf es lib",
+    "postinstall": "ibmtelemetry --config=telemetry.yml"
+  },
+  "dependencies": {
+    "@edwin-coder-arquitech/icon-helpers": "^10.54.0",
+    "@ibm/telemetry-js": "^1.5.0"
+  },
+  "devDependencies": {
+    "@edwin-coder-arquitech/cli-reporter": "^10.7.0",
+    "@edwin-coder-arquitech/icons": "^11.55.0",
+    "fs-extra": "^11.0.0",
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.0",
+    "rollup": "^2.79.1",
+    "vue": "^2.6.8"
+  },
+  "sideEffects": false
+}
