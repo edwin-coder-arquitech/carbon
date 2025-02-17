@@ -5,7 +5,6 @@ Set-Location $path_build
 
 Write-Host "///// Git Commit //////////////////////////////" -f DarkCyan
 
-
 # Script para detectar cambios y hacer commit en Git
 # Función para verificar y manejar errores
 function Test-GitCommand {
@@ -37,6 +36,25 @@ function Test-GitCommand {
               Write-Host "`nError de permisos. Verifica:" -ForegroundColor Yellow
               Write-Host "1. Tus credenciales de Git están configuradas correctamente" -ForegroundColor Cyan
               Write-Host "2. Tienes permisos en el repositorio remoto" -ForegroundColor Cyan
+          }
+          elseif ($output -match "Your push would publish a private email address") {
+              Write-Host "`nError: GitHub está protegiendo tu correo electrónico privado" -ForegroundColor Red
+              Write-Host "`nPuedes resolver esto de dos formas:" -ForegroundColor Yellow
+              Write-Host "1. Configurar un correo noreply de GitHub:" -ForegroundColor Cyan
+              Write-Host "   git config --global user.email 'tu-usuario@users.noreply.github.com'" -ForegroundColor White
+              Write-Host "`n2. Ajustar la configuración de privacidad en GitHub:" -ForegroundColor Cyan
+              Write-Host "   - Visita: https://github.com/settings/emails" -ForegroundColor White
+              Write-Host "   - Modifica las opciones de privacidad de correo" -ForegroundColor White
+              
+              $option = Read-Host "`n¿Deseas configurar un correo noreply ahora? (S/N)"
+              if ($option -eq 'S' -or $option -eq 's') {
+                  $currentUser = git config user.name
+                  $noreplyEmail = "$currentUser@users.noreply.github.com"
+                  Write-Host "`nConfigurando correo noreply: $noreplyEmail" -ForegroundColor Cyan
+                  git config user.email $noreplyEmail
+                  Write-Host "Correo configurado. Intentando push nuevamente..." -ForegroundColor Green
+                  return Test-GitCommand "git push" "Error al realizar push después de configurar correo"
+              }
           }
           elseif ($output -match "failed to push some refs") {
               Write-Host "`nEl push falló. Intentando obtener más información..." -ForegroundColor Yellow
