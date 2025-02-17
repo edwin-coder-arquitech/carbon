@@ -1,5 +1,7 @@
 # 
 [string] $path_build    = "C:\azdo\arquitech\carbon\packages" # $PSScriptRoot
+[string] $path_build    = "D:\azdo\arquitech\carbon\packages"
+
 Set-Location $path_build
 
 Write-Host "///// Public Package //////////////////////////////" -f DarkCyan
