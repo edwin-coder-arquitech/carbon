@@ -5,6 +5,7 @@ Set-Location $path_build
 
 Write-Host "///// Git Commit //////////////////////////////" -f DarkCyan
 
+
 # Script para detectar cambios y hacer commit en Git
 # Función para verificar y manejar errores
 function Test-GitCommand {
@@ -14,17 +15,43 @@ function Test-GitCommand {
   )
   
   try {
-      $output = Invoke-Expression $Command 2>&1
+      $output = Invoke-Expression "$Command 2>&1"
       if ($LASTEXITCODE -ne 0) {
           Write-Host "Error: $ErrorMessage" -ForegroundColor Red
-          Write-Host "Detalles: $output" -ForegroundColor Red
+          Write-Host "Comando que falló: $Command" -ForegroundColor Yellow
+          Write-Host "Detalles del error:" -ForegroundColor Red
+          Write-Host $output -ForegroundColor Red
+          
+          # Verificar tipos específicos de errores
+          if ($output -match "no upstream branch") {
+              Write-Host "`nSolución: La rama actual no tiene upstream. Intenta:" -ForegroundColor Yellow
+              Write-Host "git push --set-upstream origin $(git branch --show-current)" -ForegroundColor Cyan
+              $setUpstream = Read-Host "¿Deseas configurar el upstream ahora? (S/N)"
+              if ($setUpstream -eq 'S' -or $setUpstream -eq 's') {
+                  $upstreamCommand = "git push --set-upstream origin $(git branch --show-current)"
+                  Invoke-Expression $upstreamCommand
+                  return $?
+              }
+          }
+          elseif ($output -match "Permission denied") {
+              Write-Host "`nError de permisos. Verifica:" -ForegroundColor Yellow
+              Write-Host "1. Tus credenciales de Git están configuradas correctamente" -ForegroundColor Cyan
+              Write-Host "2. Tienes permisos en el repositorio remoto" -ForegroundColor Cyan
+          }
+          elseif ($output -match "failed to push some refs") {
+              Write-Host "`nEl push falló. Intentando obtener más información..." -ForegroundColor Yellow
+              Write-Host "`nEstado actual de la rama:" -ForegroundColor Cyan
+              git status
+              Write-Host "`nDiferencias con el remoto:" -ForegroundColor Cyan
+              git diff origin/$(git branch --show-current)
+          }
           return $false
       }
       return $true
   }
   catch {
       Write-Host "Error: $ErrorMessage" -ForegroundColor Red
-      Write-Host "Detalles: $_" -ForegroundColor Red
+      Write-Host "Excepción: $_" -ForegroundColor Red
       return $false
   }
 }
@@ -37,6 +64,11 @@ if (-not (Test-Path -Path "$currentPath\.git")) {
   Write-Host "Error: El directorio actual no es un repositorio Git." -ForegroundColor Red
   exit 1
 }
+
+# Mostrar información del estado actual
+Write-Host "`nInformación del repositorio:" -ForegroundColor Cyan
+Write-Host "Rama actual: $(git branch --show-current)" -ForegroundColor White
+Write-Host "Remoto configurado: $(git remote -v)" -ForegroundColor White
 
 # Verificar conexión con el repositorio remoto
 $remoteCheck = Test-GitCommand "git remote -v" "No se puede acceder al repositorio remoto"
@@ -104,7 +136,11 @@ if ($modifiedFiles) {
       if ($remoteCheck) {
           $pushConfirmation = Read-Host "`n¿Deseas hacer push de los cambios? (S/N)"
           if ($pushConfirmation -eq 'S' -or $pushConfirmation -eq 's') {
-              # Verificar si hay cambios en el remoto antes de push
+              # Verificar el estado antes del push
+              Write-Host "`nVerificando estado del repositorio antes del push..." -ForegroundColor Cyan
+              git status
+              
+              # Realizar fetch para verificar cambios remotos
               if (Test-GitCommand "git fetch" "Error al verificar cambios remotos") {
                   $behindCount = git rev-list HEAD..origin/$(git branch --show-current) --count
                   if ($behindCount -gt 0) {
@@ -119,8 +155,32 @@ if ($modifiedFiles) {
                   }
               }
 
-              # Realizar push
-              if (Test-GitCommand "git push" "Error al realizar push") {
+              # Intentar push con más información
+              Write-Host "`nIntentando push..." -ForegroundColor Cyan
+              if (-not (Test-GitCommand "git push" "Error al realizar push")) {
+                  Write-Host "`nIntentando push con -v para más detalles..." -ForegroundColor Yellow
+                  Test-GitCommand "git push -v" "Error al realizar push (verbose)"
+                  
+                  # Mostrar opciones de recuperación
+                  Write-Host "`nOpciones disponibles:" -ForegroundColor Yellow
+                  Write-Host "1. Intentar git push --force (CUIDADO: puede sobrescribir cambios remotos)" -ForegroundColor Red
+                  Write-Host "2. Hacer git pull --rebase y reintentar" -ForegroundColor Cyan
+                  Write-Host "3. Verificar configuración del remoto" -ForegroundColor Cyan
+                  $option = Read-Host "`nSelecciona una opción (1-3) o presiona Enter para cancelar"
+                  
+                  switch ($option) {
+                      "1" { Test-GitCommand "git push --force" "Error al realizar force push" }
+                      "2" { 
+                          if (Test-GitCommand "git pull --rebase" "Error al realizar pull --rebase") {
+                              Test-GitCommand "git push" "Error al realizar push después del rebase"
+                          }
+                      }
+                      "3" { 
+                          Write-Host "`nConfiguración actual del remoto:" -ForegroundColor Cyan
+                          git remote -v
+                      }
+                  }
+              } else {
                   Write-Host "`nPush realizado exitosamente." -ForegroundColor Green
               }
           }
